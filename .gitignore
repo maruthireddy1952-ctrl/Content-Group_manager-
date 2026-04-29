@@ -1,0 +1,26 @@
+# Python virtual environments
+venv/
+.venv/
+
+
+# macOS system files
+.DS_Store
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# Logs
+*.log

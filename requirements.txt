@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+requests
+youtube-transcript-api
+sentence-transformers
+ollama
+streamlit
+python-dotenv
+apscheduler
+ollama
+sentence-transformers
+youtube_transcript_api
