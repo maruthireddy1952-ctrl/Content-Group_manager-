@@ -1,25 +1,48 @@
-from backend.services.ai_analysis_service import analyze_video
-from backend.services.embedding_service import generate_embedding
-from backend.services.trend_service import compute_trends
+from backend.database.crud import (
+
+    get_unprocessed_videos,
+
+    mark_video_processed,
+
+    save_analysis
+)
+
+from backend.services.ai_analysis_service import (
+    analyze_video
+)
 
 
-def run_analysis(videos):
+def run_analysis():
 
-    analyses = []
+    videos = get_unprocessed_videos()
+
+    print(f"\nFound {len(videos)} unprocessed videos\n")
 
     for video in videos:
 
-        result = analyze_video(video["transcript"])
+        print(f"Analyzing: {video.title}")
 
-        analysis = {
-            "video_id": video["video_id"],
-            "channel_id": video["channel_id"],
-            "views": video["views"],
-            "topic": result["topic"]
+        result = analyze_video(video.transcript)
+
+        analysis_data = {
+
+            "video_id": video.video_id,
+
+            "topic": result["topic"],
+
+            "normalized_topic": result["topic"],
+
+            "keywords": ",".join(result["keywords"]),
+
+            "category": result["category"],
+
+            "trend_score": result["trend_score"]
         }
 
-        analyses.append(analysis)
+        save_analysis(analysis_data)
 
-    trends = compute_trends(analyses)
+        mark_video_processed(video.video_id)
 
-    return trends
+        print("Saved analysis.\n")
+
+    print("Analysis pipeline completed.")
