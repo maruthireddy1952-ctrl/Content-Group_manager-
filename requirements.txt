@@ -13,3 +13,4 @@ apscheduler
 ollama
 sentence-transformers
 youtube_transcript_api
+einops

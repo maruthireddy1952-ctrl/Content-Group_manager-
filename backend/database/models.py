@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, Float,Boolean
 from .db import Base
-
+from sqlalchemy import DateTime
+from datetime import datetime
 
 class Channel(Base):
 
@@ -30,6 +31,12 @@ class Video(Base):
     views = Column(Integer)
 
     processed = Column(Boolean, default=False)
+    published_at = Column(DateTime)
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
 
 class Analysis(Base):
 
@@ -48,3 +55,18 @@ class Analysis(Base):
     category = Column(String)
 
     trend_score = Column(Float)
+
+    created_at = Column(
+                DateTime,
+                default=datetime.utcnow
+                )
+
+class TopicCluster(Base):
+
+    __tablename__ = "topic_clusters"
+
+    id = Column(Integer, primary_key=True)
+
+    topic_name = Column(String, unique=True)
+
+    embedding = Column(Text)

@@ -8,9 +8,9 @@ from backend.services.transcript_service import (
 )
 
 from backend.database.crud import save_video
-from api.channels import CHANNELS
+from backend.api.channels import CHANNELS
 
-
+from datetime import datetime
 
 
 def run_ingestion():
@@ -32,22 +32,31 @@ def run_ingestion():
             if not video_id:
                 continue
 
-            title = item["snippet"]["title"]
+            snippet = item["snippet"]
 
-            description = item["snippet"]["description"]
+            title = snippet["title"]
 
-            print(f"\nProcessing video: {title}")
+            description = snippet["description"]
+
+            published_at = snippet["publishedAt"]
+
+            # Convert YouTube datetime format
+            published_at = datetime.fromisoformat(
+                published_at.replace("Z", "+00:00")
+            )
+
+            print(f"\n▶ Processing: {title}")
 
             # Fetch transcript
             transcript = get_transcript(video_id)
 
             if not transcript:
 
-                print("No transcript found. Skipping.")
+                print("⚠ No transcript found. Skipping.")
 
                 continue
 
-            # Fetch views
+            # Fetch real views
             views = get_video_stats(video_id)
 
             video_data = {
@@ -62,9 +71,12 @@ def run_ingestion():
 
                 "transcript": transcript,
 
-                "views": views
+                "views": views,
+
+                "published_at": published_at
             }
 
+            # Save to DB
             save_video(video_data)
 
             total_saved += 1
